@@ -150,7 +150,7 @@ function getInitialHardcodedQuestions() {
         {
             sentence1: "I stopped watching Game of Thrones. You've seen one ____, you've seen them all.",
             answer1: "dragon",
-            sentence2: "After a few episodes the series seemed to ____.",
+            sentence2: "After a couple seasons, the series seemed to ____.",
             answer2: "drag on",
         },
         {
@@ -192,7 +192,7 @@ function getInitialHardcodedQuestions() {
         {
             sentence1: "The stylist took one look at Henry's brittle nails, and asked if he'd like to add keratin treatments to his ____.",
             answer1: "manicure",
-            sentence2: "She added, \"I assure you, ____ of this condition says it's well worth the cost!\"",
+            sentence2: "She added, \"I assure you, every ____ of this condition says it's well worth the cost!\"",
             answer2: "man i cure",
         },
         {
@@ -436,13 +436,13 @@ function updateTimer() {
     secondsElapsed++;
     const minutes = Math.floor(secondsElapsed / 60);
     const seconds = secondsElapsed % 60;
-    timerDisplay.textContent = `Elapsed time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+    timerDisplay.textContent = `Timer: ${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
 // Start timer on page load
 document.addEventListener('DOMContentLoaded', () => {
     timerInterval = setInterval(updateTimer, 1000);
-    timerDisplay.textContent = `Elapsed time: 0:00`; // Initial display
+    timerDisplay.textContent = `Timer: 0:00`; // Initial display
     loadQuestions(); // Load questions when DOM is ready
 });
 
