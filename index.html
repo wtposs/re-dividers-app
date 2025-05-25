@@ -1,276 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Homophone Challenge</title>
-    <style>
-        /* Your existing CSS from the first 100 lines you shared */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.6;
-            text-align: center;
-            background-color: #f4f7f6;
-            color: #333;
-        }
-
-        #header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 600px;
-            margin: 0 auto 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ccc;
-        }
-
-        #logo {
-            max-width: 250px;
-            height: auto;
-        }
-
-        #timer {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #555;
-        }
-        #userIdDisplay {
-            font-size: 0.8em;
-            color: #777;
-            margin-top: 5px;
-        }
-
-        .question {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px 25px;
-            margin: 20px auto;
-            max-width: 600px;
-            text-align: left;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .question p {
-            margin: 8px 0;
-        }
-
-        .question p strong {
-            margin-right: 5px;
-        }
-
-        input[type="text"] {
-            padding: 8px 10px;
-            margin-left: 8px;
-            font-size: 1em;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            vertical-align: middle;
-            box-sizing: border-box;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        input.medium {
-            width: 150px;
-            text-align: left;
-        }
-
-        input.small {
-            width: 100px;
-            text-align: left;
-        }
-
-        input:focus {
-            border-color: #66afe9;
-            outline: none;
-        }
-
-        .large-period {
-            font-weight: bold;
-            font-size: 1.5em;
-            vertical-align: middle;
-            margin: 0 2px;
-            color: #333;
-        }
-
-        button {
-            padding: 12px 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background-color 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .score-display-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-
-        #result, #topResult {
-            font-weight: bold;
-            font-size: 1.1em;
-            text-align: center;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #e9ecef;
-            color: #333;
-            margin: 0;
-        }
-
-        input.correct {
-            border-color: #28a745;
-            background-color: #e6ffe6;
-            color: #155724;
-        }
-
-        input.incorrect {
-            border-color: #dc3545;
-            background-color: #ffe6e6;
-            color: #721c24;
-        }
-
-        /* Styles for the new question form */
-        #add-question-section {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px 25px;
-            margin: 30px auto;
-            max-width: 600px;
-            text-align: left;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: none; /* Hidden by default */
-        }
-
-        #add-question-section h2 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-
-        #addQuestionForm label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        #addQuestionForm input[type="text"] {
-            width: calc(100% - 20px); /* Adjust for padding */
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        #addQuestionForm button {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .message-box {
-            display: none; /* Hidden by default */
-            padding: 10px;
-            margin: 10px auto;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-            max-width: 600px;
-        }
-
-        .message-box.success {
-            background-color: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
-        }
-
-        .message-box.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-Dividers App</title>
+    <link rel="stylesheet" href="style.css">
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.css" />
 </head>
 <body>
+    <div id="loader" style="display: none;">Loading...</div>
 
-    <div id="header">
-        <img id="logo" src="KKd5PmI.png" alt="earap logo" />
-        <div>
-            <p id="timer">Elapsed time: 0:00</p>
-            <p id="userIdDisplay">User ID: Loading...</p>
+    <div id="login-container">
+        <h1>Welcome to the Re-Dividers App!</h1>
+        <p id="sign-in-prompt">Please sign in to continue.</p>
+        <div id="firebaseui-auth-container"></div>
+    </div>
+
+    <div id="app-container" style="display: none;">
+        <div class="header">
+            <span id="login-name"></span> | <button id="logout-button">Logout</button>
+            <div id="timer-display">Timer: 0:00</div>
         </div>
-    </div>
-
-    <div id="auth-section" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; margin: 20px auto; max-width: 400px; background-color: #f9f9f9;">
-        <h2 style="text-align: center; color: #333; margin-bottom: 20px;">User Login</h2>
-
-        <div id="login-form-container">
-            <input type="email" id="login-email" placeholder="Email"
-                   style="width: calc(100% - 20px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
-            <input type="password" id="login-password" placeholder="Password"
-                   style="width: calc(100% - 20px); padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px;">
-            <button id="login-btn"
-                    style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
-                Login / Register
-            </button>
-            <p id="auth-error-message" style="color: red; text-align: center; margin-top: 10px;"></p>
+        <h1>Homophone Challenge</h1>
+        <div id="question-container">
+            </div>
+        <div class="controls">
+            <button id="check-answers-button">Check Answers</button>
+            <button id="reset-button">Reset</button>
+            <button id="show-answers-button">Show Answers</button>
         </div>
-
-        <div id="logout-form-container" style="display: none; text-align: center; margin-top: 20px;">
-            <p>Welcome, <span id="current-user-email" style="font-weight: bold;"></span>!</p>
-            <button id="logout-btn"
-                    style="padding: 10px 20px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
-                Logout
-            </button>
-        </div>
-    </div>
-    <div class="score-display-wrapper">
-        <button id="checkAnswersBtnTop">Check Answers</button> <p id="topResult"></p>
+        <div id="message-box" class="message-box"></div>
     </div>
 
-    <div id="questions-container">
-    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.js"></script>
 
-    <div class="score-display-wrapper">
-        <button id="checkAnswersBtnBottom">Check Answers</button> <p id="result"></p>
-    </div>
-
-    <div id="messageBox" class="message-box"></div>
-
-    <div id="add-question-section">
-        <h2>Add New Homophone Question</h2>
-        <form id="addQuestionForm" onsubmit="event.preventDefault(); addNewQuestion();">
-            <p>Use "_______" as a placeholder for the blank(s) in your sentences.</p>
-            <label for="newSentence1">Sentence 1:</label>
-            <input type="text" id="newSentence1" placeholder="e.g., The cat was very _______." required>
-
-            <label for="newAnswer1">Answer for Blank 1:</label>
-            <input type="text" id="newAnswer1" placeholder="e.g., happy" required>
-
-            <label for="newSentence2">Sentence 2:</label>
-            <input type="text" id="newSentence2" placeholder="e.g., She felt _______ after the nap." required>
-
-            <label for="newAnswer2">Answer for Blank 2:</label>
-            <input type="text" id="newAnswer2" placeholder="e.g., ha pee" required>
-
-            <button type="submit">Add Question</button>
-        </form>
-    </div>
-    <script type="module" src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>

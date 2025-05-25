@@ -216,7 +216,7 @@ function checkAnswers() {
     const currentElapsedTimeMs = Date.now() - startTime;
     const minutes = Math.floor(currentElapsedTimeMs / 60000);
     const seconds = Math.floor((currentElapsedTimeMs % 60000) / 1000);
-    const frozenTimeFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const frozenTimeFormatted = `<span class="math-inline">\{minutes\}\:</span>{seconds.toString().padStart(2, '0')}`;
 
     let scoreMsg;
     if (correctCount === totalBlanks) {
@@ -380,7 +380,7 @@ function updateTimer() {
     const elapsedTime = Date.now() - startTime;
     const minutes = Math.floor(elapsedTime / 60000);
     const seconds = Math.floor((elapsedTime % 60000) / 1000);
-    timerDisplay.textContent = `Timer: ${minutes}:${seconds.toString().padStart(2, '0')}`; // Main continuous timer
+    timerDisplay.textContent = `Timer: <span class="math-inline">\{minutes\}\:</span>{seconds.toString().padStart(2, '0')}`; // Main continuous timer
 }
 
 function stopTimer() {
