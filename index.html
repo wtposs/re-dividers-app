@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Homophone Challenge</title>
+    <style>
+        /* Existing CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            text-align: center;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        #header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        #logo {
+            max-width: 250px;
+            height: auto;
+        }
+
+        #timer {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #555;
+        }
+        #userIdDisplay {
+            font-size: 0.8em;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .question {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px 25px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question p {
+            margin: 8px 0;
+        }
+
+        .question p strong {
+            margin-right: 5px;
+        }
+
+        input[type="text"] {
+            padding: 8px 10px;
+            margin-left: 8px;
+            font-size: 1em;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            vertical-align: middle;
+            box-sizing: border-box;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        input.medium {
+            width: 150px;
+            text-align: left;
+        }
+
+        input.small {
+            width: 100px;
+            text-align: left;
+        }
+
+        input:focus {
+            border-color: #66afe9;
+            outline: none;
+        }
+
+        .large-period {
+            font-weight: bold;
+            font-size: 1.5em;
+            vertical-align: middle;
+            margin: 0 2px;
+            color: #333;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .score-display-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        #result, #topResult {
+            font-weight: bold;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            color: #333;
+            margin: 0;
+        }
+
+        input.correct {
+            border-color: #28a745;
+            background-color: #e6ffe6;
+            color: #155724;
+        }
+
+        input.incorrect {
+            border-color: #dc3545;
+            background-color: #ffe6e6;
+            color: #721c24;
+        }
+
+        /* Styles for the new question form */
+        #add-question-section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px 25px;
+            margin: 30px auto;
+            max-width: 600px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none; /* Hidden by default */
+        }
+
+        #add-question-section h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        #addQuestionForm label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        #addQuestionForm input[type="text"] {
+            width: calc(100% - 20px); /* Adjust for padding */
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        #addQuestionForm button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .message-box {
+            display: none; /* Hidden by default */
+            padding: 10px;
+            margin: 10px auto;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <img id="logo" src="https://i.imgur.com/KKd5PmI.png" alt="earap logo" />
+        <div>
+            <p id="timer">Elapsed time: 0:00</p>
+            <p id="userIdDisplay">User ID: Loading...</p>
+        </div>
+    </div>
+
+    <div class="score-display-wrapper">
+        <button id="checkAnswersBtnTop">Check Answers</button> <p id="topResult"></p>
+    </div>
+
+    <div id="questions-container">
+        </div>
+
+    <div class="score-display-wrapper">
+        <button id="checkAnswersBtnBottom">Check Answers</button> <p id="result"></p>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <div id="add-question-section">
+        <h2>Add New Homophone Question</h2>
+        <form id="addQuestionForm" onsubmit="event.preventDefault(); addNewQuestion();">
+            <p>Use "_______" as a placeholder for the blank(s) in your sentences.</p>
+            <label for="newSentence1">Sentence 1:</label>
+            <input type="text" id="newSentence1" placeholder="e.g., The cat was very _______." required>
+
+            <label for="newAnswer1">Answer for Blank 1:</label>
+            <input type="text" id="newAnswer1" placeholder="e.g., happy" required>
+
+            <label for="newSentence2">Sentence 2:</label>
+            <input type="text" id="newSentence2" placeholder="e.g., She felt _______ after the nap." required>
+
+            <label for="newAnswer2">Answer for Blank 2:</label>
+            <input type="text" id="newAnswer2" placeholder="e.g., ha pee" required>
+
+            <button type="submit">Add Question</button>
+        </form>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, setDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"; // Optional: Commented out to avoid 'duplicate stream' errors if you're not actively using Analytics.
+
+        // Global variables for Firebase
+        const appId = 'homophone-challenge-app-v1'; // A unique ID for your app in Firestore
+        // YOUR FIREBASE PROJECT'S CONFIGURATION GOES HERE
+        const firebaseConfig = {
+            apiKey: "",
+            authDomain: "re-dividers.firebaseapp.com",
+            projectId: "re-dividers",
+            storageBucket: "re-dividers.firebasestorage.app",
+            messagingSenderId: "253272309466",
+            appId: "1:253272309466:web:f9e9d20caa4327840bafe3",
+            measurementId: "G-C3DCHGMV9R"
+        };
+
+        let app;
+        let db;
+        let auth;
+        let currentUserId = 'anonymous'; // Default to anonymous
+        let isAuthReady = false;
+        let isAdmin = false; // New flag to track admin status
+        let adminUids = new Set(); // Stores UIDs of admin users
+
+        // Initialize Firebase and authenticate
+        async function initializeFirebase() {
+            console.log("Initializing Firebase...");
+            try {
+                app = initializeApp(firebaseConfig);
+                console.log("Firebase app initialized:", app);
+                db = getFirestore(app);
+                console.log("Firestore initialized:", db);
+                auth = getAuth(app);
+                console.log("Auth initialized:", auth);
+
+                // Load admin UIDs first
+                await loadAdminUids();
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        console.log("Firebase authenticated. User ID:", currentUserId);
+                        document.getElementById('userIdDisplay').textContent = `User ID: ${currentUserId}`;
+                        
+                        isAdmin = adminUids.has(currentUserId);
+                        console.log("Is Admin:", isAdmin);
+                        if (isAdmin) {
+                            document.getElementById('add-question-section').style.display = 'block'; // Show form
+                        } else {
+                            document.getElementById('add-question-section').style.display = 'none'; // Hide form
+                        }
+
+                        isAuthReady = true;
+                        await loadQuestions(); // Load questions once authenticated
+                    } else {
+                        console.log("No user signed in. Attempting anonymous sign-in.");
+                        try {
+                            await signInAnonymously(auth);
+                            console.log("Anonymous sign-in attempted.");
+                        } catch (error) {
+                            console.error("Firebase authentication failed:", error);
+                            displayMessage("Authentication failed. Questions might not save/load correctly.", "error");
+                            isAuthReady = true; // Fallback: still try to load public data
+                            window.questionsData = getInitialHardcodedQuestions(); // Ensure questions are displayed even if auth fails
+                            renderAllQuestions();
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Firebase initialization failed (catch block):", error);
+                displayMessage("Firebase initialization failed. Check your config and console for errors.", "error");
+                isAuthReady = true;
+                window.questionsData = getInitialHardcodedQuestions();
+                renderAllQuestions();
+            }
+        }
+
+        // --- New function to load admin UIDs ---
+        async function loadAdminUids() {
+            try {
+                if (!db) {
+                     console.warn("Firestore DB not initialized when trying to load admin UIDs. Skipping.");
+                     return;
+                }
+                const adminsCollectionRef = collection(db, `artifacts/${appId}/public/config/admins`);
+                const snapshot = await getDocs(adminsCollectionRef);
+                adminUids.clear(); // Clear existing
+                snapshot.forEach(doc => {
+                    adminUids.add(doc.id); // Add the document ID (which is the UID)
+                });
+                console.log("Admin UIDs loaded:", Array.from(adminUids));
+            } catch (error) {
+                console.error("Error loading admin UIDs:", error);
+                displayMessage("Error loading admin configurations. Check Firestore security rules for /artifacts/homophone-challenge-app-v1/public/config/admins.", "error");
+            }
+        }
+
+
+        // --- Global variables for game state and functions ---
+        window.questionsData = []; // Array to hold all question objects
+        window.nextAnswerId = 1; // Counter for unique input field IDs
+        window.secondsElapsed = 0;
+        window.timerDisplay = null; // Will be set on DOMContentLoaded
+        window.timerInterval = null;
+
+        // Function to load questions from Firestore
+        window.loadQuestions = async () => {
+            if (!db || !isAuthReady) {
+                console.warn("Firestore not ready or not authenticated yet. Skipping question load.");
+                return;
+            }
+
+            const questionsCollectionRef = collection(db, `artifacts/${appId}/public/data/homophone_questions`);
+            try {
+                const snapshot = await getDocs(questionsCollectionRef);
+                const fetchedQuestions = [];
+                let maxAnswerId = 0;
+
+                snapshot.forEach(doc => {
+                    const q = doc.data();
+                    fetchedQuestions.push(q);
+                    // Update maxAnswerId based on existing question inputIds
+                    q.inputIds.forEach(id => {
+                        const num = parseInt(id.replace('answer', ''), 10);
+                        if (!isNaN(num) && num > maxAnswerId) {
+                            maxAnswerId = num;
+                        }
+                    });
+                });
+
+                // If Firestore is empty, populate with hardcoded questions
+                if (fetchedQuestions.length === 0) {
+                    console.log("Firestore collection is empty. Populating with initial hardcoded questions.");
+                    const initialQuestions = getInitialHardcodedQuestions();
+                    for (const q of initialQuestions) {
+                        const newDocRef = doc(questionsCollectionRef);
+                        // Using setDoc with a specific ID to ensure a unique document per question
+                        await setDoc(newDocRef, q);
+                    }
+                    window.questionsData = initialQuestions;
+                    // Recalculate nextAnswerId after populating if needed, or let snapshot handle it
+                    window.nextAnswerId = maxAnswerId + initialQuestions.length * 2 + 1; // Approx, as each question has 2 blanks
+                    renderAllQuestions();
+                } else {
+                    // Sort fetched questions by questionNumber
+                    fetchedQuestions.sort((a, b) => a.questionNumber - b.questionNumber);
+                    window.questionsData = fetchedQuestions;
+                    window.nextAnswerId = maxAnswerId + 1;
+                    renderAllQuestions();
+                }
+
+                // Set up real-time listener for new questions
+                onSnapshot(query(questionsCollectionRef, orderBy("questionNumber", "asc")), (snapshot) => {
+                    const liveQuestions = [];
+                    let liveMaxAnswerId = 0;
+                    snapshot.forEach(doc => {
+                        const q = doc.data();
+                        liveQuestions.push(q);
+                        q.inputIds.forEach(id => {
+                            const num = parseInt(id.replace('answer', ''), 10);
+                            if (!isNaN(num) && num > liveMaxAnswerId) {
+                                liveMaxAnswerId = num;
+                            }
+                        });
+                    });
+                    liveQuestions.sort((a, b) => a.questionNumber - b.questionNumber);
+                    window.questionsData = liveQuestions;
+                    window.nextAnswerId = liveMaxAnswerId + 1;
+                    renderAllQuestions(); // Re-render all questions on any change
+                });
+
+            } catch (error) {
+                console.error("Error loading questions from Firestore:", error);
+                displayMessage("Error loading questions from database. Using default questions. Check Firestore security rules or data format.", "error");
+                window.questionsData = getInitialHardcodedQuestions(); // Fallback to hardcoded
+                renderAllQuestions();
+            }
+        };
+
+        // Function to save a new question to Firestore
+        window.saveQuestion = async (questionObj) => {
+            if (!db || !isAuthReady || !isAdmin) {
+                console.error("Firestore not ready, not authenticated, or not authorized. Cannot save question.");
+                displayMessage("Cannot save question: Not authorized or database not ready.", "error");
+                return;
+            }
+            try {
+                const questionsCollectionRef = collection(db, `artifacts/${appId}/public/data/homophone_questions`);
+                await addDoc(questionsCollectionRef, questionObj);
+                console.log("Question added to Firestore!");
+                displayMessage("Question added successfully!", "success");
+            } catch (error) {
+                console.error("Error adding question to Firestore:", error);
+                displayMessage("Error saving question to database. Check security rules.", "error");
+            }
+        };
+
+        // Helper to get initial hardcoded questions (if Firestore fails or is empty)
+        function getInitialHardcodedQuestions() {
+            // *** IMPORTANT: 'answers_map' is used here instead of 'answers' array of arrays ***
+            return [
+                {
+                    questionNumber: 1,
+                    sentences: [
+                        "When Martha's neighbor played his CD music after midnight, no one could calm her down. She was <input type='text' id='answer1' placeholder='Answer' class='medium'>.",
+                        "She was very upset that he put the <input type='text' id='answer2' placeholder='Answer' class='medium'>."
+                    ],
+                    answers_map: { // Changed from 'answers' to 'answers_map'
+                        "answer1": ["disconsolate"],
+                        "answer2": ["disc on so late"]
+                    },
+                    inputIds: ["answer1", "answer2"]
+                },
+                {
+                    questionNumber: 2,
+                    sentences: [
+                        "Even a Supreme Court <input type='text' id='answer3' placeholder='Answer' class='medium'> needs an occasional break.",
+                        "Sotomayor takes her tea without lemon or sugar; she has it with <input type='text' id='answer4' placeholder='Answer' class='medium'>."
+                    ],
+                    answers_map: {
+                        "answer3": ["justice"],
+                        "answer4": ["just ice"]
+                    },
+                    inputIds: ["answer3", "answer4"]
+                },
+                {
+                    questionNumber: 3,
+                    sentences: [
+                        "My dog couldn't control his bladder in the house and peed on my <input type='text' id='answer5' placeholder='Answer' class='medium'>.",
+                        "Now he stays in my automobile. He's a <input type='text' id='answer6' placeholder='Answer' class='medium'>."
+                    ],
+                    answers_map: {
+                        "answer5": ["carpet"],
+                        "answer6": ["car pet"]
+                    },
+                    inputIds: ["answer5", "answer6"]
+                },
+                {
+                    questionNumber: 4,
+                    sentences: [
+                        "Jennifer was suspicious of the police officers huddled <input type='text' id='answer7' placeholder='Answer' class='medium'>.",
+                        "She was sure they were out <input type='text' id='answer8' placeholder='Answer' class='medium'>."
+                    ],
+                    answers_map: {
+                        "answer7": ["together"],
+                        "answer8": ["to get her"]
+                    },
+                    inputIds: ["answer7", "answer8"]
+                },
+                {
+                    questionNumber: 5,
+                    sentences: [
+                        "It took hours, but Tom finally shaved off his beard and <input type='text' id='answer9' placeholder='Answer' class='medium'>.",
+                        "I really think his arm <input type='text' id='answer10' placeholder='Answer' class='medium'> from all the effort."
+                    ],
+                    answers_map: {
+                        "answer9": ["mustache"],
+                        "answer10": ["must ache"]
+                    },
+                    inputIds: ["answer9", "answer10"]
+                },
+                {
+                    questionNumber: 6,
+                    sentences: [
+                        "In Paris I visited the National <input type='text' id='answer11' placeholder='Answer' class='medium'>.",
+                        "And then the Triumphal <input type='text' id='answer12' placeholder='Answer' class='small'>.<span class='large-period'>.</span> <input type='text' id='answer13' placeholder='Answer' class='small'> never seen anything so impressive."
+                    ],
+                    answers_map: {
+                        "answer11": ["archive"],
+                        "answer12": ["arch"],
+                        "answer13": ["ive"]
+                    },
+                    inputIds: ["answer11", "answer12", "answer13"]
+                },
+                {
+                    questionNumber: 7,
+                    sentences: [
+                        "You shouldn't sit around and let your muscles <input type='text' id='answer14' placeholder='Answer' class='medium'>.",
+                        "You'd better train for the marathon if you want to win <input type='text' id='answer15' placeholder='Answer' class='medium'>."
+                    ],
+                    answers_map: {
+                        "answer14": ["atrophy"],
+                        "answer15": ["a trophy"]
+                    },
+                    inputIds: ["answer14", "answer15"]
+                },
+                {
+                    questionNumber: 8,
+                    sentences: [
+                        "Wearing her crown adorned with oval and <input type='text' id='answer16' placeholder='Answer' class='medium'> sapphires, the listless queen felt undecided.",
+                        "Should she go to the banquet <input type='text' id='answer17' placeholder='Answer' class='medium'>?"
+                    ],
+                    answers_map: {
+                        "answer16": ["orbed"],
+                        "answer17": ["or bed"]
+                    },
+                    inputIds: ["answer16", "answer17"]
+                },
+                {
+                    questionNumber: 9,
+                    sentences: [
+                        "The clumsy chemist <input type='text' id='answer18' placeholder='Answer' class='medium'> and spilled the slimy serum on the floor.",
+                        "Overnight, this <input type='text' id='answer19' placeholder='Answer' class='medium'> a swarm of ants that then gained superpowers."
+                    ],
+                    answers_map: {
+                        "answer18": ["goofed"],
+                        "answer19": ["goo fed"]
+                    },
+                    inputIds: ["answer18", "answer19"]
+                },
+                {
+                    questionNumber: 10,
+                    sentences: [
+                        "The old deer was exhausted and his legs nearly <input type='text' id='answer20' placeholder='Answer' class='medium'>.",
+                        "Still, the <input type='text' id='answer21' placeholder='Answer' class='medium'> his herd through the dense forest to safety."
+                    ],
+                    answers_map: {
+                        "answer20": ["buckled"],
+                        "answer21": ["buck led"]
+                    },
+                    inputIds: ["answer20", "answer21"]
+                },
+                {
+                    questionNumber: 11,
+                    sentences: [
+                        "With acid and a metal plate, she’s an <input type='text' id='answer22' placeholder='Answer' class='medium'> like no other.",
+                        "She can do lettering, illustrations, patterns, <input type='text' id='answer23' placeholder='Answer' class='small'>.<span class='large-period'></span> <input type='text' id='answer24' placeholder='Answer' class='small'> talents are truly limitless."
+                    ],
+                    answers_map: {
+                        "answer22": ["etcher"],
+                        "answer23": ["etc"],
+                        "answer24": ["her"]
+                    },
+                    inputIds: ["answer22", "answer23", "answer24"]
+                },
+                {
+                    questionNumber: 12,
+                    sentences: [
+                        "My <input type='text' id='answer25' placeholder='Answer' class='medium'> other insists on a prenup before marriage.",
+                        "I don’t agree, but I’ll <input type='text' id='answer26' placeholder='Answer' class='medium'> change her mind."
+                    ],
+                    answers_map: {
+                        "answer25": ["significant"],
+                        "answer26": ["sign if i can't"]
+                    },
+                    inputIds: ["answer25", "answer26"]
+                },
+                {
+                    questionNumber: 13,
+                    sentences: [
+                        "The athlete suffered a direct hit to his left <input type='text' id='answer27' placeholder='Answer' class='medium'> during the game.",
+                        "A medical <input type='text' id='answer28' placeholder='Answer' class='medium'> required to ensure full recovery."
+                    ],
+                    answers_map: {
+                        "answer27": ["testis"],
+                        "answer28": ["test is"]
+                    },
+                    inputIds: ["answer27", "answer28"]
+                },
+                {
+                    questionNumber: 14,
+                    sentences: [
+                        "I stopped watching Game of Thrones. You've seen one <input type='text' id='answer29' placeholder='Answer' class='medium'>, you've seen them all.",
+                        "After a few episodes the series seemed to <input type='text' id='answer30' placeholder='Answer' class='medium'>."
+                    ],
+                    answers_map: {
+                        "answer29": ["dragon"],
+                        "answer30": ["drag on"]
+                    },
+                    inputIds: ["answer29", "answer30"]
+                },
+                {
+                    questionNumber: 15,
+                    sentences: [
+                        "You say you’re fed up, that I've been <input type='text' id='answer31' placeholder='Answer' class='medium'> to prove my feelings since our freshman year?",
+                        "You'll see when at the <input type='text' id='answer32' placeholder='Answer' class='medium'> you a love ballad."
+                    ],
+                    answers_map: {
+                        "answer31": ["promising"],
+                        "answer32": ["prom i sing"]
+                    },
+                    inputIds: ["answer31", "answer32"]
+                },
+                {
+                    questionNumber: 16,
+                    sentences: [
+                        "The queen can’t stop <input type='text' id='answer33' placeholder='Answer' class='medium'> about how her husband has changed for the better.",
+                        "The newly <input type='text' id='answer34' placeholder='Answer' class='medium'> is the picture of health."
+                    ],
+                    answers_map: {
+                        "answer33": ["thinking"],
+                        "answer34": ["thin king"]
+                    },
+                    inputIds: ["answer33", "answer34"]
+                },
+                {
+                    questionNumber: 17,
+                    sentences: [
+                        "The picnic was going great, with me winning 21-16 at <input type='text' id='answer35' placeholder='Answer' class='medium'>.",
+                        "But when it came time to eat, with one taste I knew I'd put <input type='text' id='answer36' placeholder='Answer' class='medium'> the lamb."
+                    ],
+                    answers_map: {
+                        "answer35": ["badminton"],
+                        "answer36": ["bad mint on"]
+                    },
+                    inputIds: ["answer35", "answer36"]
+                },
+                {
+                    questionNumber: 18,
+                    sentences: [
+                        "Our pet Misty deems depressed and appears <input type='text' id='answer37' placeholder='Answer' class='medium'>, staring blankly at the wall for hours.",
+                        "We need to give that <input type='text' id='answer38' placeholder='Answer' class='medium'> for her nerves."
+                    ],
+                    answers_map: {
+                        "answer37": ["catatonic"],
+                        "answer38": ["cat a tonic"]
+                    },
+                    inputIds: ["answer37", "answer38"]
+                },
+                {
+                    questionNumber: 19,
+                    sentences: [
+                        "I stayed with my mother's older brother and he was appalled at how <input type='text' id='answer39' placeholder='Answer' class='medium'> I left the room.",
+                        "I felt terrible and gave my <input type='text' id='answer40' placeholder='Answer' class='medium'> apology."
+                    ],
+                    answers_map: {
+                        "answer39": ["unclean"],
+                        "answer40": ["uncle an"]
+                    },
+                    inputIds: ["answer39", "answer40"]
+                },
+                {
+                    questionNumber: 20,
+                    sentences: [
+                        "What you don’t do to help endangered animals may doom them like the <input type='text' id='answer41' placeholder='Answer' class='medium'> bird.",
+                        "What you <input type='text' id='answer42' placeholder='Answer' class='medium'> can ensure their survival for years to come."
+                    ],
+                    answers_map: {
+                        "answer41": ["dodo"],
+                        "answer42": ["do do"]
+                    },
+                    inputIds: ["answer41", "answer42"]
+                },
+                {
+                    questionNumber: 21,
+                    sentences: [
+                        "The stylist took one look at Henry's brittle nails, and asked if he'd like to add keratin treatments to his <input type='text' id='answer43' placeholder='Answer' class='medium'>.",
+                        "She added, \"I assure you, <input type='text' id='answer44' placeholder='Answer' class='medium'> of this condition says it's well worth the cost!\""
+                    ],
+                    answers_map: {
+                        "answer43": ["manicure"],
+                        "answer44": ["man i cure"]
+                    },
+                    inputIds: ["answer43", "answer44"]
+                },
+                {
+                    questionNumber: 22,
+                    sentences: [
+                        "Dangerously, the tiny boat began to <input type='text' id='answer45' placeholder='Answer' class='medium'> in the storm.",
+                        "Engine problems arose as the wrong <input type='text' id='answer46' placeholder='Answer' class='medium'> on the fuel tank let in seawater."
+                    ],
+                    answers_map: {
+                        "answer45": ["capsize"],
+                        "answer46": ["cap size"]
+                    },
+                    inputIds: ["answer45", "answer46"]
+                }
+            ];
+        }
+
+        // --- Game Logic Functions ---
+        window.updateTimer = () => {
+            secondsElapsed++;
+            const minutes = Math.floor(secondsElapsed / 60);
+            const seconds = secondsElapsed % 60;
+            if (timerDisplay) {
+                timerDisplay.textContent = `Elapsed time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        };
+
+        window.normalize = (str) => {
+            return str.trim().toLowerCase().replace(/[.,!?;:'"-]+/g, "").replace(/\s+/g, " ");
+        };
+
+        window.checkAnswers = () => {
+            const finalSeconds = secondsElapsed;
+            const finalMinutes = Math.floor(finalSeconds / 60);
+            const remainingSeconds = finalSeconds % 60;
+            const formattedTime = `${finalMinutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+
+            let correctCount = 0;
+            let totalBlanks = 0;
+
+            // Clear previous feedback
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.classList.remove("correct", "incorrect");
+            });
+
+            questionsData.forEach(q => {
+                let isQuestionCorrect = true;
+                q.inputIds.forEach((inputId) => { // Loop through inputIds
+                    totalBlanks++;
+                    const inputEl = document.getElementById(inputId);
+                    if (!inputEl) {
+                        console.warn(`Input with ID ${inputId} not found for question ${q.questionNumber}.`);
+                        isQuestionCorrect = false;
+                        return;
+                    }
+
+                    const userAnswer = normalize(inputEl.value);
+                    // *** MODIFIED: Get answers from answers_map using inputId ***
+                    const validAnswersForBlank = q.answers_map[inputId] || []; // Get the array of valid answers for this specific input
+                    
+                    let isBlankCorrect = validAnswersForBlank.some(ans => userAnswer === normalize(ans));
+
+                    if (isBlankCorrect) {
+                        inputEl.classList.add("correct");
+                        inputEl.classList.remove("incorrect");
+                    } else {
+                        inputEl.classList.add("incorrect");
+                        inputEl.classList.remove("correct");
+                        isQuestionCorrect = false;
+                    }
+                });
+
+                if (isQuestionCorrect) {
+                    correctCount++;
+                }
+            });
+
+            let message = `Score: ${correctCount}/${questionsData.length} - Elapsed time: ${formattedTime}`;
+
+            document.getElementById("result").textContent = message;
+            document.getElementById("topResult").textContent = message;
+        };
+
+        // Function to render all questions from questionsData array
+        window.renderAllQuestions = () => {
+            const questionsContainer = document.getElementById('questions-container');
+            if (!questionsContainer) {
+                console.error("Questions container not found!");
+                return;
+            }
+            questionsContainer.innerHTML = ''; // Clear existing questions
+
+            questionsData.forEach(q => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+
+                q.sentences.forEach((sentence, sIdx) => {
+                    const p = document.createElement('p');
+                    // Only prepend question number to the first sentence
+                    if (sIdx === 0) {
+                        p.innerHTML = `<strong>${q.questionNumber}.</strong> ${sentence}`;
+                    } else {
+                        p.innerHTML = sentence;
+                    }
+                    questionDiv.appendChild(p);
+                });
+                questionsContainer.appendChild(questionDiv);
+            });
+        };
+
+        // Function to handle adding a new question from the form
+        window.addNewQuestion = async () => {
+            const form = document.getElementById('addQuestionForm');
+            const sentence1Input = document.getElementById('newSentence1');
+            const answer1Input = document.getElementById('newAnswer1');
+            const sentence2Input = document.getElementById('newSentence2');
+            const answer2Input = document.getElementById('newAnswer2');
+
+            const s1 = sentence1Input.value.trim();
+            const a1 = answer1Input.value.trim();
+            const s2 = sentence2Input.value.trim();
+            const a2 = answer2Input.value.trim();
+
+            if (!s1 || !a1 || !s2 || !a2) {
+                displayMessage("Please fill in all fields for the new question.", "error");
+                return;
+            }
+
+            const newQuestionNumber = questionsData.length + 1;
+            const newAnswerId1 = `answer${window.nextAnswerId++}`; // Generate unique IDs for new inputs
+            const newAnswerId2 = `answer${window.nextAnswerId++}`;
+
+            // Construct sentences with new unique input IDs
+            const sentence1WithInput = s1.replace('_______', `<input type='text' id='${newAnswerId1}' placeholder='Answer' class='medium'>`);
+            const sentence2WithInput = s2.replace('_______', `<input type='text' id='${newAnswerId2}' placeholder='Answer' class='medium'>`);
+
+            const newQuestion = {
+                questionNumber: newQuestionNumber,
+                sentences: [sentence1WithInput, sentence2WithInput],
+                answers_map: { // *** MODIFIED: Use answers_map for new questions too ***
+                    [newAnswerId1]: [a1], // Answer for the first blank
+                    [newAnswerId2]: [a2]  // Answer for the second blank
+                },
+                inputIds: [newAnswerId1, newAnswerId2] // Store the new IDs
+            };
+
+            // Add to local data and save to Firestore
+            questionsData.push(newQuestion);
+            await saveQuestion(newQuestion);
+
+            // Clear form fields
+            sentence1Input.value = '';
+            answer1Input.value = '';
+            sentence2Input.value = '';
+            answer2Input.value = '';
+        };
+
+        // Custom message box function (replaces alert)
+        window.displayMessage = (msg, type = "info") => {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = msg;
+            messageBox.className = `message-box ${type}`;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+        };
+
+        // --- Initialize on DOMContentLoaded ---
+        document.addEventListener('DOMContentLoaded', () => {
+            timerDisplay = document.getElementById("timer");
+            timerInterval = setInterval(updateTimer, 1000);
+            timerDisplay.textContent = `Elapsed time: 0:00`;
+            document.getElementById('userIdDisplay').textContent = `User ID: Loading...`;
+
+            const checkAnswersBtnTop = document.getElementById('checkAnswersBtnTop');
+            const checkAnswersBtnBottom = document.getElementById('checkAnswersBtnBottom');
+
+            if (checkAnswersBtnTop) {
+                checkAnswersBtnTop.addEventListener('click', window.checkAnswers);
+            }
+            if (checkAnswersBtnBottom) {
+                checkAnswersBtnBottom.addEventListener('click', window.checkAnswers);
+            }
+
+            initializeFirebase();
+        });
+    </script>
+
+</body>
+</html>

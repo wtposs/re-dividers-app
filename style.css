@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f7f6; /* Original light background */
+    color: #333;
+    line-height: 1.6;
+}
+
+#app {
+    max-width: 800px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+#questions-container {
+    margin-top: 20px;
+}
+
+.question {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.question p {
+    margin: 0; /* Final margin for sentences */
+    flex-basis: calc(100% - 200px);
+    flex-grow: 1;
+}
+
+.question p strong {
+    margin-right: 5px;
+}
+
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button[style*="background-color: rgb(220, 53, 69)"],
+button[style*="background-color: rgb(220, 53, 69)"]:hover {
+    background-color: #dc3545;
+}
+button[style*="background-color: rgb(0, 123, 255)"],
+button[style*="background-color: rgb(0, 123, 255)"]:hover {
+    background-color: #007bff;
+}
+button[style*="background-color: rgb(40, 167, 69)"],
+button[style*="background-color: rgb(40, 167, 69)"]:hover {
+    background-color: #28a745;
+}
+button[style*="background-color: rgb(108, 117, 125)"],
+button[style*="background-color: rgb(108, 117, 125)"]:hover {
+    background-color: #6c757d;
+}
+
+
+#admin-form {
+    background-color: #e9ecef;
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 30px;
+    border: 1px solid #dcdcdc;
+}
+
+#admin-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+#admin-form input[type="text"],
+#admin-form input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#admin-form button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+#admin-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+#message-container {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    text-align: center;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#message-container.info {
+    background-color: #e0f7fa;
+    color: #007bff;
+    border: 1px solid #007bff;
+    opacity: 1;
+}
+
+#message-container.success {
+    background-color: #d4edda;
+    color: #28a745;
+    border: 1px solid #28a745;
+    opacity: 1;
+}
+
+#message-container.error {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    opacity: 1;
+}
