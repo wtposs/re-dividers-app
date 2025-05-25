@@ -176,7 +176,7 @@ function checkAnswers() {
         // Handle multiple blanks for q.answer2
         if (Array.isArray(q.answer2)) {
             const input3 = document.getElementById(`answer${(index * 2) + 3}`); // For the third blank
-            answer2User = [input2.value.trim().toLowerCase(), input3.value.trim().toLowerCase()];
+            answer2User = [input3 ? input3.value.trim().toLowerCase() : '', input2.value.trim().toLowerCase()]; // Ensure input3 exists
             totalBlanks += 2; // Two blanks for these questions
         } else {
             answer2User = input2.value.trim().toLowerCase();
@@ -197,7 +197,9 @@ function checkAnswers() {
         input2.classList.remove('correct', 'incorrect');
         if (Array.isArray(q.answer2)) {
             const input3 = document.getElementById(`answer${(index * 2) + 3}`);
-            input3.classList.remove('correct', 'incorrect');
+            if (input3) { // Ensure input3 exists before manipulating
+                input3.classList.remove('correct', 'incorrect');
+            }
         }
 
         if (isCorrect1) {
@@ -211,7 +213,9 @@ function checkAnswers() {
             input2.classList.add('correct');
             if (Array.isArray(q.answer2)) {
                 const input3 = document.getElementById(`answer${(index * 2) + 3}`);
-                input3.classList.add('correct');
+                if (input3) { // Ensure input3 exists before manipulating
+                    input3.classList.add('correct');
+                }
                 correctCount += 2; // Increment by 2 for two correct blanks
             } else {
                 correctCount++;
@@ -220,7 +224,9 @@ function checkAnswers() {
             input2.classList.add('incorrect');
             if (Array.isArray(q.answer2)) {
                 const input3 = document.getElementById(`answer${(index * 2) + 3}`);
-                input3.classList.add('incorrect');
+                if (input3) { // Ensure input3 exists before manipulating
+                    input3.classList.add('incorrect');
+                }
             }
         }
     });
