@@ -48,6 +48,22 @@ const timerDisplay = document.getElementById('timer-display'); // Main continuou
 const resetButton = document.getElementById('reset-button');
 const showAnswersButton = document.getElementById('show-answers-button');
 
+// --- Message Box Function (NOW DEFINED EARLY) ---
+function showMessage(message, type) {
+    messageBox.textContent = message;
+    messageBox.className = 'message-box'; // Reset classes
+    if (type === 'success') {
+        messageBox.classList.add('success');
+    } else if (type === 'error') {
+        messageBox.classList.add('error');
+    } else if (type === 'info') {
+        messageBox.classList.add('info');
+    } else {
+        messageBox.style.display = 'none'; // Hide if type is 'none' or unknown
+        return;
+    }
+    messageBox.style.display = 'block';
+}
 
 let questions = []; // Array to hold questions
 let timerInterval;
@@ -99,15 +115,14 @@ async function fetchAndRenderQuestions() {
             if (initialQuestions.length > 0) {
                 await docRef.set({ homophone_questions: initialQuestions });
                 questions = initialQuestions; // Set questions from initial list
-                renderAllQuestions(questions);
-                showMessage("Questions populated to Firestore!", "success");
+                showMessage("Questions populated to Firestore!", "success"); // This call will now work!
             } else {
                 showMessage("No questions found or hardcoded. Please add questions to Firestore.", "error");
             }
         }
     } catch (error) {
         console.error("Error fetching or populating questions:", error);
-        showMessage("Error loading questions. Check console for details.", "error");
+        showMessage("Error loading questions. Check console for details.", "error"); // This call will now work!
     }
     resetGame(); // Always reset the game state after fetching/rendering questions
 }
@@ -216,7 +231,7 @@ function checkAnswers() {
     const currentElapsedTimeMs = Date.now() - startTime;
     const minutes = Math.floor(currentElapsedTimeMs / 60000);
     const seconds = Math.floor((currentElapsedTimeMs % 60000) / 1000);
-    const frozenTimeFormatted = `<span class="math-inline">\{minutes\}\:</span>{seconds.toString().padStart(2, '0')}`;
+    const frozenTimeFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
     let scoreMsg;
     if (correctCount === totalBlanks) {
@@ -380,7 +395,7 @@ function updateTimer() {
     const elapsedTime = Date.now() - startTime;
     const minutes = Math.floor(elapsedTime / 60000);
     const seconds = Math.floor((elapsedTime % 60000) / 1000);
-    timerDisplay.textContent = `Timer: <span class="math-inline">\{minutes\}\:</span>{seconds.toString().padStart(2, '0')}`; // Main continuous timer
+    timerDisplay.textContent = `Timer: ${minutes}:${seconds.toString().padStart(2, '0')}`; // Main continuous timer
 }
 
 function stopTimer() {
